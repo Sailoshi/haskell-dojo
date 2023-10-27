@@ -5,46 +5,83 @@ import TTT.A1
 
 -- Q#01
 
-promptPlayer = undefined
+main = do
+    putStrLn "Hello, what's your name?"
+    name <- getLine
+    putStrLn "Hey "
+
+promptPlayer :: Player -> IO ()
+promptPlayer p = do
+    putStrLn startText
+    name <- getLine
+    putStrLn ("You've selected: " ++ name)
+    where
+        startText = concat ["Player",  show p, "'s turn: enter a row and column position (ex. A1): "]
 
 -- Q#02
 
-_RANGE_ = undefined
+_RANGE_ = [0.._SIZE_ - 1]
 
 -- Q#03
 
-isDigit = undefined
+isDigit :: Char -> Bool
+isDigit d = d `elem` ['0'..'9']
 
-readDigit = undefined
+readDigit :: Char -> Int
+readDigit d = if isDigit d then read [d] else -1
+
+--readDigit d = if isDigit d then fromEnum d - 48 else -1
 
 -- Q#04
 
-_EMPTY_ROW_ = undefined
+_EMPTY_ROW_ :: [Square]
+_EMPTY_ROW_ = replicate _SIZE_ Neither
 
-_EMPTY_BOARD_ = undefined
+_EMPTY_BOARD_ :: [[Square]]
+_EMPTY_BOARD_ = replicate _SIZE_ _EMPTY_ROW_
 
 -- Q#05
 
-isTied = undefined
+isTied :: Board -> Bool
+isTied b = Neither `elem` concat b
 
-_TIED_BOARD_ = undefined
+_TIED_BOARD_ = [
+        [X, O, O]
+      , [O, Neither, X]
+      , [O, X, O]
+      ]
 
 -- Q#06
 
-indexRowStrings = undefined
-
+indexRowStrings :: [String] -> [(Char, String)]
+indexRowStrings a = zip b a
+                    where
+                     b  = ['A'..'Z']
 -- Q#07
 
-formatLine = undefined
+formatLine :: [String] -> String
+formatLine a = _SEP_ ++ intercalate _SEP_  a ++ _SEP_
 
 -- Q#08
 
-isMoveInBounds = undefined
+isMoveInBounds :: Move -> Bool
+isMoveInBounds (r, c) | r >= 0 && r < _SIZE_ && c >= 0 && c < _SIZE_ = True
+                      | otherwise = False
 
 -- Q#09
 
-stringToMove = undefined
+stringToMove :: String -> Move
+stringToMove [a, b] = (convertRowIndex a, readDigit b)
+stringToMove _ = _INVALID_MOVE_
 
 -- Q#10
 
-replaceSquareInRow = undefined
+replaceSquareInRow :: Player -> Int -> Row -> Row
+replaceSquareInRow _ _ [] = []
+replaceSquareInRow p c r = if c < 0 || c >= _SIZE_ then r else xs ++ [p] ++ ys
+                    where
+                        (xs, (x:ys)) = splitAt c r
+
+rsX = replaceSquareInRow X
+rsO = replaceSquareInRow O
+rsN = replaceSquareInRow Neither
