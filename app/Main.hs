@@ -41,9 +41,12 @@ main = do
         hSetBuffering stdout NoBuffering
         putStrLn "λ SELECT APPLICATION:\n"
         traverse_ printApp $ Map.toList apps
-        putStrLn ""
+        putStrLn ""        
         putStr "λ "
         c <- getChar
         putStrLn ""
         let notFound = putStrLn "Invalid selection: try again.\n" >> menu
+        --let exception = "Nothing"
+        --let name = maybe exception appName $ parseChoice apps c
+        --putStrLn name
         maybe notFound runApp $ parseChoice apps c

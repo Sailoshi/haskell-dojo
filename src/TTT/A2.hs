@@ -13,8 +13,8 @@ main = do
 promptPlayer :: Player -> IO ()
 promptPlayer p = do
     putStrLn startText
-    name <- getLine
-    putStrLn ("You've selected: " ++ name)
+    --name <- getLine
+    --putStrLn ("You've selected: " ++ name)
     where
         startText = concat ["Player",  show p, "'s turn: enter a row and column position (ex. A1): "]
 
@@ -60,7 +60,7 @@ indexRowStrings a = zip b a
 -- Q#07
 
 formatLine :: [String] -> String
-formatLine a = _SEP_ ++ intercalate _SEP_  a ++ _SEP_
+formatLine a = _SEP_ ++ intercalate _SEP_  a ++ _SEP_ ++ "\n"
 
 -- Q#08
 

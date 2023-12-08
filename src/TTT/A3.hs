@@ -12,12 +12,12 @@ showInts (x:xs) = show x : showInts xs
 showInts [] = []
 
 _HEADER_ :: String
-_HEADER_ =  formatLine $ " " : showInts [0, 1, 2 , 3]
+_HEADER_ =  formatLine $ "E" : showInts _RANGE_
 
 -- Q#02
 
 showSquares :: [Square] -> [String]
-showSquares (x:xs) = if x == Neither then "" : showSquares xs else show x : showSquares xs
+showSquares (x:xs) = if x == Neither then "E" : showSquares xs else show x : showSquares xs
 showSquares [] = []
 
 -- Q#03
@@ -60,9 +60,9 @@ putSquare :: Player -> Board -> Move -> Board
 putSquare p b (rowIndex, cIndex) = go rowIndex 0 b
     where
         go :: Int -> Int -> Board -> Board
-        go selectedRowIndex currentRowIndex (xs: (y:ys)) = if selectedRowIndex == currentRowIndex then replaceSquareInRow p cIndex y : (y:ys) else y : go selectedRowIndex (currentRowIndex+1) (y:ys)
-        go _ _ [ys:yss] = [replaceSquareInRow p cIndex (ys:yss)]
-        go _ _ _ = []
+        go selectedRowIndex currentRowIndex (xs: yss) = if selectedRowIndex == currentRowIndex then replaceSquareInRow p cIndex xs : yss else xs : go selectedRowIndex (currentRowIndex+1) yss
+        --go _ _ [ys:yss] = ys : [replaceSquareInRow p cIndex yss]
+        go _ _ list = list
 
 -- Q#08
 
