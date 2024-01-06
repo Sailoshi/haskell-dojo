@@ -25,8 +25,8 @@ repeatedMove move game = move `elem` moves game
 
 _TEST_GAME_ =  Game
                       {
-                        secret = "KAFFEEKANNE",
-                        guess = "___________",
+                        secret = "KANNE",
+                        guess = "_____",
                         moves = [],
                         chances = _CHANCES_
                       }
@@ -59,12 +59,16 @@ updateGame move game =
 
 
 -- Q#05
+-- TODO: implement Custom show instance for GAME
+--instance Show Game where
+    --show :: Game -> String
+    --show g = secret g ++ " " ++  ++ " "
 
 showGameHelper :: String -> [Char] -> Int -> String
-showGameHelper game moves chances =
+showGameHelper guess moves chances =
   unlines
     [ _STARS_,
-      "\tSecret Word:\t" ++ intersperse ' ' game ++ "\n",
+      "\tSecret Word:\t" ++ intersperse ' ' guess ++ "\n",
       "\tGuessed:\t" ++ intersperse ' ' (sort moves) ++ "\n",
       "\tChances:\t" ++ show chances,
       _STARS_
@@ -78,10 +82,11 @@ instance Show GameException where
                         where
                           lb = show $ fst _LENGTH_
                           ub = show $ snd _LENGTH_
-  show NotInDict = "Not in dict"
-  show InvalidMove = "Wrong move"
-  show RepeatMove = "Please repeat your move"
-  show GameOver = "Game is over"
+  show NotInDict = "Not in dict!"
+  show InvalidMove = "Wrong move!"
+  show RepeatMove = "Please repeat your move!"
+  show GameOver = "Game is over!"
+  show WonGame = "You won the Game!"
 
 
 
@@ -90,7 +95,7 @@ instance Show GameException where
 -- Q#07
 
 toMaybe :: Bool -> a -> Maybe a
-toMaybe False a = Nothing
+toMaybe False _ = Nothing
 toMaybe True a = Just a
 
 -- Q#08
@@ -104,7 +109,7 @@ hasValidChars :: Secret -> Either GameException Bool
 hasValidChars s = validateSecret hasLetters InvalidChars s
                   where
                     hasLetters:: Secret -> Bool
-                    hasLetters s = any (\l -> not $ isAlpha l) s
+                    hasLetters s = not $ any (\l -> not $ isAlpha l) s
 
 isValidLength :: Secret -> Either GameException Bool
 isValidLength s = validateSecret lengthInRange InvalidLength s
@@ -135,7 +140,13 @@ processTurn :: Move -> Game -> Either GameException Game
 processTurn m g
       | invalidMove m = Left InvalidMove
       | repeatedMove m g = Left RepeatMove
+      | validChars = Left WonGame
+      | chances g > 0 = Right updatedGame
       | chances g == 0 = Left GameOver
       | otherwise = Right updatedGame
       where
-        updatedGame = updateGame  (toUpper m) g
+        updatedGame = updateGame (toUpper m) g
+        validChars :: Bool
+        validChars = case hasValidChars (guess updatedGame) of
+                            Left _  -> False
+                            Right valid -> valid && length (guess g) == length (secret g)

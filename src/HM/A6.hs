@@ -12,14 +12,14 @@ type Secret = String
 type Dictionary = [String]
 
 -- Q#02
-data GameException = InvalidChars | InvalidLength | NotInDict | InvalidMove | RepeatMove | GameOver
+data GameException = InvalidChars | InvalidLength | NotInDict | InvalidMove | RepeatMove | GameOver | WonGame
 
 -- Q#03
 
 lengthInRange :: Secret -> Bool
-lengthInRange secret = length secret ==  totalLength
+lengthInRange secret = secretLength >= fst _LENGTH_ && secretLength <= snd _LENGTH_
     where
-        totalLength = snd _LENGTH_ - fst _LENGTH_
+        secretLength = length secret
 
 -- Q#04
 
@@ -38,7 +38,7 @@ updateChances move secret chances = if chances > 0 && notElem move secret then c
 
 -- Q#07
 
-setSecret :: IO ()
+setSecret :: IO Secret
 setSecret = do
     _ <- putStr "Enter a secret word:\t"
     _ <- showInput False
@@ -46,3 +46,4 @@ setSecret = do
     _ <- showInput True
     _SPACE_
     putStrLn $ "***" ++ secret ++ "***"
+    pure secret

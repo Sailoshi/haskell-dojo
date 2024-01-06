@@ -26,7 +26,6 @@ _RANDOM_BOOL_ = (uniformM globalStdGen:: IO Int) >>= (\randomNumber -> if even r
 firstPlayer :: IO Bool -> IO Player
 firstPlayer booleanInput = booleanInput >>= (\i -> if i then return X else return O)
 
-
 -- Q#04
 getMove :: Board -> IO String
 getMove board = getLine >>= newMove
